@@ -54,6 +54,9 @@ def decode_urls(contents: list) -> list:
             valid_urls.append(new_url[0])
     return valid_urls
 
+def find_attributes(website_text):
+#     go through website and find attributes that __should__ match based on given zip code (or surrounding zipcodes?)
+
 
 def main():
     total = init_search("50014 healthcare")
