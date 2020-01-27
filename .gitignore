@@ -1,2 +1,4 @@
 .idea
 .env
+results.html
+__pycache__/

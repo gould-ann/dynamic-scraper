@@ -15,6 +15,6 @@ def get_nearby_zipcodes(zipcode: str, distance: str) -> json:
     r = requests.get(" https://www.zipcodeapi.com/rest/" + zipcode_auth_key +  "/radius.json/" + zipcode + "/" + distance
                  + " /mi ")
     return r.json()
-    # print(r.json())
 
-print(get_nearby_zipcodes("50014", "10"))
+
+# print(get_nearby_zipcodes("50014", "10"))

@@ -6,6 +6,8 @@ import requests
 import re
 from requests import Response
 
+# from zipcodes import get_nearby_zipcodes
+
 # for debugging
 import os
 
@@ -54,8 +56,8 @@ def decode_urls(contents: list) -> list:
             valid_urls.append(new_url[0])
     return valid_urls
 
-def find_attributes(website_text):
-#     go through website and find attributes that __should__ match based on given zip code (or surrounding zipcodes?)
+# def find_attributes(website_text):
+# #     go through website and find attributes that __should__ match based on given zip code (or surrounding zipcodes?)
 
 
 def main():
