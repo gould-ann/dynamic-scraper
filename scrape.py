@@ -28,11 +28,16 @@ def init_search(terms: str) -> list:
 
 
 def get_data(website: str) -> Response:
-    r = requests.get(website)
-    sleep(0.2)
-    print(r.status_code)
-    # print(r.headers)
-    return r.text
+    try:
+        r = requests.get(website, timeout=2)
+        sleep(0.2)
+        r.encoding = 'utf-8'
+        print(r.status_code)
+        return r.text
+    except:
+        # TODO: make this better... maybe mock
+        r = requests.get("https://gould-ann.github.io/redirect.html")
+        return r.text
 
 
 def write_to_file(filename : str, contents):
@@ -40,10 +45,11 @@ def write_to_file(filename : str, contents):
     file.write(contents)
     file.close()
 
+
 def append_to_file(filename: str, contents):
     file = open(filename, 'a')
     file.write(contents)
-    file.write("---------------------------------------------------------------------------------------------------")
+    file.write("\n")
     file.close()
 
 
@@ -56,17 +62,41 @@ def decode_urls(contents: list) -> list:
             valid_urls.append(new_url[0])
     return valid_urls
 
-# def find_attributes(website_text):
-# #     go through website and find attributes that __should__ match based on given zip code (or surrounding zipcodes?)
+
+def find_attributes(website_text: str, zipcode: str):
+    # split content outside of tags
+    split_words = re.findall(">(.+?)<", website_text)
+    parsed_adr = []
+    # mb make list comprehension
+    for i in split_words:
+        if zipcode in i:
+            zip_index = i.index(zipcode)
+            try:
+                parsed_adr.append(i[zip_index - 100: zip_index])
+            except:
+                parsed_adr.append(i[zip_index - 40: zip_index])
+    return parsed_adr
 
 
 def main():
-    total = init_search("50014 healthcare")
+    # search and get links
+    zipcode = "50265"
+    total = init_search(zipcode + " healthcare")
+    print(total)
+    # find good links
     http = decode_urls(total)
-    filename = "results.html"
-    os.remove(filename)
-    for i in http:
-        append_to_file(filename, get_data(i))
+    link_text = [get_data(i) for i in http]
+    # gets text before zipcode (typically adresses)
+    link_atr = [find_attributes(i, zipcode) for i in link_text]
+    # save to file here
+    write_to_file("contents.txt", str(link_atr[0]))
+    # TODO: for some reason everything is duplicated here
+    for i in link_atr[1:]:
+        append_to_file("contents.txt", str(i))
+
+
+
+
 
 
 if __name__== "__main__":
