@@ -16,8 +16,8 @@ import os
 '''
 def init_search(terms: str) -> list:
     url = "https://google.com/search?q=" + urllib.parse.quote(terms)
-    print(url)
-    resp = get_data(url)
+    # print(url)
+    resp = get_website_data(url)
     soup = BeautifulSoup(resp, 'html.parser')
     total = []
     for i in soup.findAll('a'):
@@ -27,15 +27,18 @@ def init_search(terms: str) -> list:
     # write_to_file("output_a.txt", str(total))
 
 
-def get_data(website: str) -> Response:
+'''
+returns contents of html data from website
+'''
+def get_website_data(website: str) -> Response:
     try:
         r = requests.get(website, timeout=2)
         sleep(0.2)
         r.encoding = 'utf-8'
-        print(r.status_code)
+        print(r.status_code, r.url)
         return r.text
     except:
-        # TODO: make this better... maybe mock
+        # TODO: make this better... maybe mock at some point
         r = requests.get("https://gould-ann.github.io/redirect.html")
         return r.text
 
@@ -52,7 +55,9 @@ def append_to_file(filename: str, contents):
     file.write("\n")
     file.close()
 
-
+'''
+Creates list of urls we can click on to ~learn more~
+'''
 def decode_urls(contents: list) -> list:
     valid_urls = []
     for i in contents:
@@ -62,7 +67,10 @@ def decode_urls(contents: list) -> list:
             valid_urls.append(new_url[0])
     return valid_urls
 
-
+'''
+IN PROGRESS:
+finds details of addresses
+'''
 def find_attributes(website_text: str, zipcode: str):
     # split content outside of tags
     split_words = re.findall(">(.+?)<", website_text)
@@ -81,11 +89,11 @@ def find_attributes(website_text: str, zipcode: str):
 def main():
     # search and get links
     zipcode = "50265"
-    total = init_search(zipcode + " healthcare")
+    total = init_search(zipcode + " doctors")
     print(total)
     # find good links
     http = decode_urls(total)
-    link_text = [get_data(i) for i in http]
+    link_text = [get_website_data(i) for i in http]
     # gets text before zipcode (typically adresses)
     link_atr = [find_attributes(i, zipcode) for i in link_text]
     # save to file here
