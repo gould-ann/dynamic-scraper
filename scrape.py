@@ -6,7 +6,7 @@ import requests
 import re
 from requests import Response
 
-# from zipcodes import get_nearby_zipcodes
+from zipcodes import get_nearby_zipcodes
 
 # for debugging
 import os
@@ -101,6 +101,9 @@ def main():
     # TODO: for some reason everything is duplicated here
     for i in link_atr[1:]:
         append_to_file("contents.txt", str(i))
+
+    zipcode_json = get_nearby_zipcodes(zipcode, "10")
+    write_to_file("zip.json", str(zipcode_json))
 
 
 
